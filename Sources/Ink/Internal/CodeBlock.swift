@@ -24,7 +24,8 @@ internal struct CodeBlock: Fragment {
         var code = ""
 
         while !reader.didReachEnd {
-            if code.last == "\n", reader.currentCharacter == marker {
+            //code.last == "\n" 去掉这个判断，有些时候代码块结尾标记不是最后一行的开头
+            if reader.currentCharacter == marker {
                 let markerCount = reader.readCount(of: marker)
 
                 if markerCount == startingMarkerCount {

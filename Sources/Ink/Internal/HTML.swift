@@ -79,8 +79,8 @@ private extension Reader {
                 guard name.last != "/" else {
                     return (name.dropLast(), true)
                 }
-
-                return (name, suffix.last == "/" || name == "!--")
+                // 补充对hexo标记的支持
+                return (name, suffix.last == "/" || name == "!--" || name == "!--more--")
             }
 
             advanceIndex()

@@ -27,6 +27,7 @@ internal final class TextStyleMarker: Readable, HTMLConvertible {
             reader.advanceIndex()
 
             if !reader.didReachEnd, reader.currentCharacter.isAny(of: .boldItalicStyleMarkers) {
+                // 连续两个italic标记为加粗
                 let secondMarker = reader.currentCharacter
                 let markers = String([firstMarker, secondMarker])
                 reader.advanceIndex()

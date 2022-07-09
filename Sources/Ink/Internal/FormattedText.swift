@@ -1,3 +1,4 @@
+import Plot
 /**
 *  Ink
 *  Copyright (c) John Sundell 2019
@@ -69,7 +70,7 @@ internal struct FormattedText: Readable, HTMLConvertible, PlainTextConvertible {
     }
 }
 
-private extension FormattedText {
+extension FormattedText {
     enum Component {
         case linebreak
         case text(Substring)
@@ -144,8 +145,9 @@ private extension FormattedText {
                             continue
                         }
                     }
-
-                    guard !reader.currentCharacter.isAny(of: .allStyleMarkers) else {
+                    // 只有两个连续的styleMarker标记才会进入styleMarker的解析
+                    guard !reader.currentCharacter.isAny(of: .allStyleMarkers)
+                            || reader.nextCharacter == " " else {
                         addPendingTextIfNeeded()
                         try parseStyleMarker()
                         continue
@@ -333,7 +335,13 @@ private extension FormattedText {
             case "`": return InlineCode.self
             case "[": return Link.self
             case "!": return Image.self
-            case "<": return HTML.self
+            case "<":
+                if reader.currentCharacter != "<" {
+                    return HTML.self
+                } else {
+                    return nil
+                }
+            case "*": return List.self
             default: return nil
             }
         }

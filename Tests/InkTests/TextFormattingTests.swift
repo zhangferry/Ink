@@ -148,6 +148,19 @@ final class TextFormattingTests: XCTestCase {
 
         XCTAssertEqual(html, "<p>Line 1<br>Line 2</p>")
     }
+    
+    func testParse() {
+        let markdown = """
+#### 有哪些情况无法响应？
+
+* **透明度**：alpha < 0.01 如果设置一个视图的透明度<0.01，会直接影响子视图的透明度。alpha：0.0~0.01为透明。
+
+### 参考
+"""
+        let html = MarkdownParser().html(from: markdown)
+        print(html)
+        
+    }
 }
 
 extension TextFormattingTests {

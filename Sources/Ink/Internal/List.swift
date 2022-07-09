@@ -42,7 +42,7 @@ internal struct List: Fragment {
             lastItem.text.append(text, separator: " ")
             list.items.append(lastItem)
         }
-
+        var isFromQuote = false
         while !reader.didReachEnd {
             switch reader.currentCharacter {
             case \.isNewline:
@@ -57,7 +57,7 @@ internal struct List: Fragment {
 
                 if itemIndentationLength < indentationLength {
                     return list
-                } else if itemIndentationLength == indentationLength {
+                } else if itemIndentationLength == indentationLength || isFromQuote {
                     continue
                 }
 
@@ -100,6 +100,7 @@ internal struct List: Fragment {
                     reader.moveToIndex(startIndex)
                     try addTextToLastItem()
                 }
+                //"-",
             case "-", "*", "+":
                 guard let nextCharacter = reader.nextCharacter,
                       nextCharacter.isSameLineWhitespace else {
@@ -114,6 +115,10 @@ internal struct List: Fragment {
                 reader.advanceIndex()
                 try reader.readWhitespaces()
                 list.items.append(Item(text: .readLine(using: &reader)))
+            case ">":
+                reader.advanceIndex()
+                isFromQuote = true
+                continue
             default:
                 try addTextToLastItem()
             }

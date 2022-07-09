@@ -32,7 +32,26 @@ internal struct Metadata: Readable {
                 continue
             }
 
-            let value = trim(reader.readUntilEndOfLine())
+            var value = trim(reader.readUntilEndOfLine())
+            // tags 有两种编写方式：同一行数组或者yml格式，对yml格式额外处理下
+            if value.isEmpty && key == "tags" {
+                // 先后遍历空行
+                var tags: [String] = []
+                var shouldSkip = false
+                
+                while !shouldSkip {
+                    reader.discardWhitespacesAndNewlines()
+                    // 为了防止和metadata的结尾标识符混淆
+                    if reader.currentCharacter == "-" && reader.nextCharacter == " " {
+                        reader.advanceIndex()
+                        let tag = trim(reader.readUntilEndOfLine())
+                        tags.append(tag)
+                    } else {
+                        shouldSkip = true
+                    }
+                }
+                value = tags.joined(separator: ",")
+            }
 
             if !value.isEmpty {
                 metadata.values[key] = value
