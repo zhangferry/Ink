@@ -1,4 +1,3 @@
-import Plot
 /**
 *  Ink
 *  Copyright (c) John Sundell 2019
